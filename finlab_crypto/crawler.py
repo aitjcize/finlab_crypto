@@ -48,7 +48,7 @@ def minutes_of_new_data(symbol, kline_size, data, source, client):
     return old, new + timedelta(minutes=1)
 
 
-def get_all_binance(symbol, kline_size, save=True, client=Client()):
+def get_all_binance(symbol, kline_size, save=True, client=None):
     """Getting histrical price data through binance api.
 
     Original code from: https://medium.com/swlh/retrieving-full-historical-data-for-every-cryptocurrency-on-binance-bitmex-using-the-python-apis-27b47fd8137f
@@ -63,7 +63,7 @@ def get_all_binance(symbol, kline_size, save=True, client=Client()):
       pd.DataFrame: OHLCV data for all
 
     """
-
+    client = client or Client()
     filename = 'history/%s-%s-data.csv' % (symbol, kline_size)
     if os.path.isfile(filename):
         data_df = pd.read_csv(filename)
@@ -97,7 +97,7 @@ def get_all_binance(symbol, kline_size, save=True, client=Client()):
     return data_df.astype(float)
 
 
-def get_nbars_binance(symbol, interval, nbars, client=Client()):
+def get_nbars_binance(symbol, interval, nbars, client=None):
     """Getting histrical price data through binance api by interval arg.
 
     Args:
@@ -110,6 +110,7 @@ def get_nbars_binance(symbol, interval, nbars, client=Client()):
         pd.DataFrame: OHLCV data for all
 
     """
+    client = client or Client()
     interval_to_seconds = lambda interval: int(interval[:-1]) * {'m': 60, 'h': 60 * 60, 'd': 60 * 60 * 24}[interval[-1]]
 
     # calculate crawl time interval
